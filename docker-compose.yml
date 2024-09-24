@@ -1,0 +1,36 @@
+services:
+  gestaotarefa.presentation:
+    image: ${DOCKER_REGISTRY-}gestaotarefapresentation
+    build:
+      context: .
+      dockerfile: GestaoTarefa.Presentation/Dockerfile
+    depends_on:
+      - sqlserver
+      - mongodb    
+    ports:
+      - "5093:8080"
+    networks:
+      - external_network_task
+
+  sqlserver:
+    container_name: sqlserver
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "Psswd@2025"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1435:1433"
+    networks:
+      - external_network_task
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    networks:
+      - external_network_task
+
+networks:
+  external_network_task:
+    external: true
